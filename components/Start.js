@@ -1,5 +1,6 @@
 import {
   ImageBackground,
+  ScrollView,
   StyleSheet,
   Text,
   TextInput,
@@ -9,6 +10,7 @@ import {
 import React, { Component } from "react";
 
 import Button from "apsl-react-native-button";
+import KeyboardSpacer from "react-native-keyboard-spacer";
 
 // import custom buttons
 
@@ -35,7 +37,10 @@ export default class Start extends Component {
             style={styles.textInput}
             onChangeText={(name) => this.setState({ name })}
             value={this.state.name}
-            placeholder='Your name ...'
+            placeholderTextColor={"black"}
+            placeholder='Your name...'
+            backgroundColor={"#F0F8FF"}
+            // opacity='0.5'
           />
         </View>
         <View style={styles.box}></View>
@@ -64,13 +69,15 @@ export default class Start extends Component {
             accessibilityLabel='Start Chatting'
             style={styles.button}
             onPress={() =>
-              this.props.navigation.navigate('Chat',
-              {
+              this.props.navigation.navigate("Chat", {
                 name: this.state.name,
                 color: this.state.color,
-              })} >
+              })
+            }
+          >
             Start Chatting
           </Button>
+          {Platform.OS === "android" ? <KeyboardSpacer /> : null}
         </View>
       </ImageBackground>
     );
@@ -91,7 +98,8 @@ const styles = StyleSheet.create({
     position: "absolute",
     marginLeft: 10,
     marginRight: 10,
-    bottom: 50,
+    bottom: 30,
+    borderRadius: 8,
   },
   title: {
     fontSize: 45,
@@ -107,9 +115,11 @@ const styles = StyleSheet.create({
     borderWidth: 1,
     backgroundColor: "rgba(255, 255, 255, 0.9)",
     color: "rgba(117, 112, 131, 0.5)",
-    marginTop: 10,
+    marginTop: 15,
     marginLeft: 20,
     marginRight: 20,
+    padding: 10,
+    borderRadius: 8,
   },
   button: {
     // flexDirection: "row",
@@ -124,6 +134,7 @@ const styles = StyleSheet.create({
     marginBottom: 60,
     // marginLeft: 30,
     // marginRight: 30,
+    // opacity: 0.7,
   },
   box: {
     flex: 1,
@@ -137,14 +148,14 @@ const styles = StyleSheet.create({
     marginTop: 10,
     flexDirection: "row",
     justifyContent: "space-evenly",
-    marginBottom: 40,
+    marginBottom: 20,
   },
   colorIcon: {
     width: 50,
     height: 50,
     borderRadius: 25,
     marginLeft: 10,
-    marginRight: 10
+    marginRight: 10,
   },
   option1: {
     backgroundColor: "#090C08",
