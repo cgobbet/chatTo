@@ -26,61 +26,77 @@ export default class Start extends Component {
 
   render() {
     return (
-      <ImageBackground
-        style={styles.backgroundImage}
-        source={require("../assets/background.png")}
-        // source={require("../assets/dark_back.jpg")}
-      >
-        <Text style={styles.title}>ChatTo</Text>
-        <View style={styles.container}>
-          <TextInput
-            style={styles.textInput}
-            onChangeText={(name) => this.setState({ name })}
-            value={this.state.name}
-            placeholderTextColor={"black"}
-            placeholder='Your name...'
-            backgroundColor={"#F0F8FF"}
-            // opacity='0.5'
-          />
-        </View>
-        <View style={styles.box}></View>
-        <Text>Choose a background color:</Text>
-        <View style={styles.colorBackground}>
-          <TouchableOpacity
-            onPress={() => this.setState({ color: "#090C08" })}
-            style={[styles.option1, styles.colorIcon]}
-          />
-          <TouchableOpacity
-            onPress={() => this.setState({ color: "#474056" })}
-            style={[styles.option2, styles.colorIcon]}
-          />
-          <TouchableOpacity
-            onPress={() => this.setState({ color: "#8A95A5" })}
-            style={[styles.option3, styles.colorIcon]}
-          />
-          <TouchableOpacity
-            onPress={() => this.setState({ color: "#B9C6AE" })}
-            style={[styles.option4, styles.colorIcon]}
-          />
-        </View>
-        <View style={{ margin: 10 }}>
-          <Button
-            accessible={true}
-            accessibilityLabel='Start Chatting'
-            style={styles.button}
-            onPress={() =>
-              this.props.navigation.navigate("Chat", {
-                name: this.state.name,
-                color: this.state.color,
-              })
-            }
-          >
-            Start Chatting
-          </Button>
-          {Platform.OS === "android" ? <KeyboardSpacer /> : null}
-        </View>
-      </ImageBackground>
-    );
+			<ImageBackground
+				style={styles.backgroundImage}
+				source={require('../assets/background.png')}
+				// source={require("../assets/dark_back.jpg")}
+			>
+				<Text style={styles.title}>ChatTo</Text>
+				<View style={styles.container}>
+					<TextInput
+						style={styles.textInput}
+						onChangeText={name => this.setState({ name })}
+						value={this.state.name}
+						placeholderTextColor={'black'}
+						placeholder='Your name...'
+						backgroundColor={'#F0F8FF'}
+						// opacity='0.5'
+					/>
+				</View>
+				<View style={styles.box}></View>
+				<Text>Choose a background color:</Text>
+				<View style={styles.colorBackground}>
+					<TouchableOpacity
+						accessible={true}
+						accessibilityLabel='More options'
+						accessibilityHint='Allows you to choose to send an image or your geolocation.'
+						accessibilityRole='button'
+						onPress={() => this.setState({ color: '#090C08' })}
+						style={[styles.option1, styles.colorIcon]}
+					/>
+					<TouchableOpacity
+						accessible={true}
+						accessibilityLabel='More options'
+						accessibilityHint='Allows you to choose to send an image or your geolocation.'
+						accessibilityRole='button'
+						onPress={() => this.setState({ color: '#474056' })}
+						style={[styles.option2, styles.colorIcon]}
+					/>
+					<TouchableOpacity
+						accessible={true}
+						accessibilityLabel='More options'
+						accessibilityHint='Allows you to choose to send an image or your geolocation.'
+						accessibilityRole='button'
+						onPress={() => this.setState({ color: '#8A95A5' })}
+						style={[styles.option3, styles.colorIcon]}
+					/>
+					<TouchableOpacity
+						accessible={true}
+						accessibilityLabel='More options'
+						accessibilityHint='Allows you to choose to send an image or your geolocation.'
+						accessibilityRole='button'
+						onPress={() => this.setState({ color: '#B9C6AE' })}
+						style={[styles.option4, styles.colorIcon]}
+					/>
+				</View>
+				<View style={{ margin: 10 }}>
+					<Button
+						accessible={true}
+						accessibilityLabel='Start Chatting'
+						style={styles.button}
+						onPress={() =>
+							this.props.navigation.navigate('Chat', {
+								name: this.state.name,
+								color: this.state.color,
+							})
+						}
+					>
+						Start Chatting
+					</Button>
+					{Platform.OS === 'android' ? <KeyboardSpacer /> : null}
+				</View>
+			</ImageBackground>
+		);
   }
 }
 
