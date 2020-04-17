@@ -11,6 +11,7 @@
     "@react-native-community/masked-view": "^0.1.7",
     "apsl-react-native-button": "^3.1.1",
     "expo": "^37.0.6",
+    "firebase": "^7.14.1",
     "link": "^0.1.5",
     "react": "~16.9.0",
     "react-dom": "~16.9.0",
@@ -24,7 +25,8 @@
     "react-native-screens": "^2.4.0",
     "react-native-web": "~0.11.7",
     "react-navigation": "^4.3.7",
-    "react-navigation-stack": "^2.3.11"
+    "react-navigation-stack": "^2.3.11",
+    "ws": "^7.2.3"
   },
   "devDependencies": {
     "@babel/core": "^7.8.6",
