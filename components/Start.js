@@ -130,7 +130,7 @@ const styles = StyleSheet.create({
     borderColor: "gray",
     borderWidth: 1,
     backgroundColor: "rgba(255, 255, 255, 0.9)",
-    color: "rgba(117, 112, 131, 0.5)",
+    color: "black",
     marginTop: 15,
     marginLeft: 20,
     marginRight: 20,
