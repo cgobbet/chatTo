@@ -42,8 +42,13 @@ export default class Chat extends Component {
 		this.referenceMessages = firebase.firestore().collection('messages');
 		this.state = {
 			messages: [],
-			// uid: 0,
-			// loggedInText: 'Processing authentication, please wait!',
+			uid: 0,
+			loggedInText: 'Processing authentication, please wait!',
+			user: {
+				uid: '',
+				name: '',
+				avatar: ''
+			},
 		};
   }
 	// User name on dialog box
@@ -56,18 +61,24 @@ export default class Chat extends Component {
 	
 	componentDidMount() { 
 		// anonymous auth process
-		this.authUnsubscribe = firebase.auth().onAuthStateChanged(async user => {
+		this.authUnsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
 			if (!user) {
 				user = await firebase.auth().signInAnonymously();
 			}
 			this.setState({
 				uid: user.uid,
+				avatar: user.avatar,
+				user: {
+					_id: user.uid,
+					name: this.props.navigation.state.params.name,
+					avatar: '',
+				},
 				loggedInText: 'You are now logged',
 			});
 			//delete your original listener, as well (as you no longer need it)
 			this.unsubscribe = this.referenceMessages.onSnapshot(this.onCollectionUpdate);
 		});
-		// start static message 
+		// start system message 
     this.setState({
 			messages: [
 				//  each message requires an ID, a creation date, and a user object
@@ -94,8 +105,6 @@ export default class Chat extends Component {
 	componentWillUnmount() {
 	// Stop listening to authentication
 	this.authUnsubscribe();
-	// Stop listening for changes
-	// this.unsubscribeListUser();
 	}
 	
 		onCollectionUpdate = (querySnapshot) => {
@@ -106,10 +115,10 @@ export default class Chat extends Component {
 			var data = doc.data();
 			messages.push({
 				_id: data._id,
-				createdAt:data.createdAt.toDate(),
+				createdAt: data.createdAt.toDate(),
 				text: data.text,
 				user: {
-					_id: data.user._id,
+					uid: data.user.uid,
 					name: data.user.name,
 					avatar: data.user.avatar,
 				},
@@ -122,13 +131,14 @@ export default class Chat extends Component {
 	};
 	
 	addMessage() {
-		// Add new list to collection
+		// Add new message to collection, setting message id, content, creation date and user id
 		this.referenceMessages.add({
 			_id: this.state.messages[0]._id,
 			text: this.state.messages[0].text,
 			createdAt: this.state.messages[0].createdAt,
-			user: this.state.messages[0].user,
-			uid: this.state.messages[0].uid,
+			// user: this.state.messages[0].user,
+			user: this.state.user,
+			uid: this.state.uid,
 		});
 	};
 
@@ -148,6 +158,7 @@ export default class Chat extends Component {
 				wrapperStyle={{
 					right: {
 						backgroundColor: '#1E90FF',
+						// avatar: this.state.avatar,
 					},
 				}}
 			/>
@@ -160,22 +171,16 @@ export default class Chat extends Component {
 			<View
 				style={[styles.container, { backgroundColor: this.props.navigation.state.params.color }]}
 			>
-				{/* <FlatList
-					data={this.state.messages}
-					renderItem={({ item }) => (
-						<Text>
-							{item.name}: {item.items}
-						</Text>
-					)}
-				/> */}
 				<GiftedChat
 					style={[styles.container, { backgroundColor: this.props.navigation.state.params.color }]}
-					renderBubble={this.renderBubble.bind(this)}
+					// renderBubble={this.renderBubble.bind(this)}
 					messages={this.state.messages}
+					avatar={this.state.avatar}
 					onSend={messages => this.onSend(messages)}
-					user={{
-						_id: 1,
-					}}
+					user={this.state.user}
+					// user={{
+					// 	_id: 1,
+					// }}
 				/>
 				{Platform.OS === 'android' ? <KeyboardSpacer /> : null}
 				{/* <GiftedChat
