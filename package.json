@@ -8,9 +8,9 @@
     "eject": "expo eject"
   },
   "dependencies": {
-    "@react-native-community/masked-view": "^0.1.7",
+    "@react-native-community/masked-view": "^0.1.10",
     "apsl-react-native-button": "^3.1.1",
-    "expo": "^37.0.6",
+    "expo": "^37.0.7",
     "firebase": "^7.14.1",
     "link": "^0.1.5",
     "react": "~16.9.0",
@@ -22,10 +22,10 @@
     "react-native-keyboard-spacer": "^0.4.1",
     "react-native-reanimated": "~1.7.0",
     "react-native-safe-area-context": "^0.7.3",
-    "react-native-screens": "^2.4.0",
+    "react-native-screens": "^2.5.0",
     "react-native-web": "~0.11.7",
-    "react-navigation": "^4.3.7",
-    "react-navigation-stack": "^2.3.11",
+    "react-navigation": "^4.3.8",
+    "react-navigation-stack": "^2.3.13",
     "ws": "^7.2.3"
   },
   "devDependencies": {
