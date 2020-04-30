@@ -12,10 +12,21 @@
 // }
 
 import { Bubble, GiftedChat } from 'react-native-gifted-chat';
-import { Button, FlatList, StyleSheet, Text, View } from "react-native";
-import React, { Component } from "react";
+import { Platform, StyleSheet, Text, View } from 'react-native';
+import React, { Component } from 'react';
+import { decode, encode } from 'base-64';
 
+// import Button from 'apsl-react-native-button';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+
+// Flatlist
+if (!global.btoa) {
+	global.btoa = encode;
+}
+
+if (!global.atob) {
+	global.atob = decode;
+}
 
 const firebase = require('firebase');
 require('firebase/firestore');
@@ -38,44 +49,30 @@ export default class Chat extends Component {
 		}
 
 		//reference to the FB collection
-		this.referenceMessageUser = null;
+		// this.referenceMessageUser = null;
 		this.referenceMessages = firebase.firestore().collection('messages');
 		this.state = {
 			messages: [],
 			uid: 0,
-			loggedInText: 'Processing authentication, please wait!',
+			// loggedInText: 'Processing authentication, please wait!',
 			user: {
 				uid: '',
 				name: '',
 				avatar: ''
 			},
 		};
-  }
-	// User name on dialog box
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: navigation.state.params.name,
-      style: navigation.state.params.background,
-    };
-	};
+	}
 	
 	componentDidMount() { 
 		// anonymous auth process
-		this.authUnsubscribe = firebase.auth().onAuthStateChanged(async (user) => {
+		this.authUnsubscribe = firebase.auth().onAuthStateChanged(async user => {
 			if (!user) {
 				user = await firebase.auth().signInAnonymously();
 			}
 			this.setState({
 				uid: user.uid,
-				avatar: user.avatar,
-				user: {
-					_id: user.uid,
-					name: this.props.navigation.state.params.name,
-					avatar: '',
-				},
 				loggedInText: 'You are now logged',
 			});
-			//delete your original listener, as well (as you no longer need it)
 			this.unsubscribe = this.referenceMessages.onSnapshot(this.onCollectionUpdate);
 		});
 		// start system message 
@@ -83,42 +80,44 @@ export default class Chat extends Component {
 			messages: [
 				//  each message requires an ID, a creation date, and a user object
 				{
-					_id: 1,
-					text: 'Hello Developer',
+					_id: 124098920,
+					text: 'Alô você',
 					createdAt: new Date(),
 					user: {
-						_id: 2,
+						_id: 5,
 						name: 'React Native',
 						avatar: 'https://placeimg.com/140/140/any',
 					},
 				},
 				{
 					_id: 2,
-					text: `${this.props.navigation.state.params.name} have just joined the chat`,
+					text: `${this.props.navigation.state.params.name} have just joined the chat`, // ! DIFF HERE
 					createdAt: new Date(),
 					system: true,
 				},
 			],
 		});
 	}
-	
+
 	componentWillUnmount() {
 	// Stop listening to authentication
 	this.authUnsubscribe();
 	}
-	
-		onCollectionUpdate = (querySnapshot) => {
+
+		onCollectionUpdate = querySnapshot => {
 		const messages = [];
 		// Go through each document
-		querySnapshot.forEach((doc) => {
+		querySnapshot.forEach(doc => {
 			// Get querySnapshot's data
 			var data = doc.data();
 			messages.push({
 				_id: data._id,
 				createdAt: data.createdAt.toDate(),
 				text: data.text,
-				user: {
-					uid: data.user.uid,
+				// user: data.user,
+				user: { //! DIFF HERE
+					_id: data.user._id,
+					// _id: data.user._id,
 					name: data.user.name,
 					avatar: data.user.avatar,
 				},
@@ -129,27 +128,29 @@ export default class Chat extends Component {
 			messages,
 		});
 	};
-	
+
 	addMessage() {
 		// Add new message to collection, setting message id, content, creation date and user id
 		this.referenceMessages.add({
 			_id: this.state.messages[0]._id,
 			text: this.state.messages[0].text,
 			createdAt: this.state.messages[0].createdAt,
-			// user: this.state.messages[0].user,
-			user: this.state.user,
+			user: this.state.messages[0].user,
+			// user: this.state.user,
 			uid: this.state.uid,
 		});
-	};
+	}
 
   onSend(messages = []) {
-    this.setState(previousState => ({
+    this.setState(
+			previousState => ({
       messages: GiftedChat.append(previousState.messages, messages),
     }),
       () => {
         this.addMessage();
-      })
-  };
+			},
+		);
+  }
 
   renderBubble(props) {
     return (
@@ -163,46 +164,46 @@ export default class Chat extends Component {
 				}}
 			/>
 		);
-  }
+	}
 
-
+	//  This adds the users name to the header
+	static navigationOptions = ({ navigation }) => {
+		return {
+			title: navigation.state.params.name,
+		};
+	};
   render() {
     return (
 			<View
-				style={[styles.container, { backgroundColor: this.props.navigation.state.params.color }]}
+				style={[
+					styles.container,
+					{
+						backgroundColor: this.props.navigation.state.params.color,
+					},
+				]}
 			>
 				<GiftedChat
-					style={[styles.container, { backgroundColor: this.props.navigation.state.params.color }]}
-					// renderBubble={this.renderBubble.bind(this)}
-					messages={this.state.messages}
-					avatar={this.state.avatar}
-					onSend={messages => this.onSend(messages)}
-					user={this.state.user}
-					// user={{
-					// 	_id: 1,
-					// }}
-				/>
-				{Platform.OS === 'android' ? <KeyboardSpacer /> : null}
-				{/* <GiftedChat
-					style={[styles.container, { backgroundColor: this.props.navigation.state.params.color }]}
-					renderBubble={this.renderBubble.bind(this)}
 					messages={this.state.messages}
 					onSend={messages => this.onSend(messages)}
 					user={{
 						_id: 1,
 					}}
-				/> */}
-				{/* <Text style={{ color: '#FFFFFF' }}>Chat Screen</Text> */}
+				/>
+				{Platform.OS === 'android' ? <KeyboardSpacer /> : null}
 			</View>
 		);
   }
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    // alignItems: "center",
-    // justifyContent: "center",
-  },
+	container: {
+		flex: 1,
+	},
+	userName: {
+		fontSize: 10,
+		color: '#000000',
+		alignSelf: 'center',
+		opacity: 0.5,
+		marginTop: 25,
+	},
 });
