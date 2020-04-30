@@ -18,6 +18,16 @@ import { decode, encode } from 'base-64';
 
 // import Button from 'apsl-react-native-button';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
+import { YellowBox } from 'react-native';
+import _ from 'lodash';
+
+YellowBox.ignoreWarnings(['Setting a timer']);
+const _console = _.clone(console);
+console.warn = message => {
+	if (message.indexOf('Setting a timer') <= -1) {
+		_console.warn(message);
+	}
+};
 
 // Flatlist
 if (!global.btoa) {
@@ -183,6 +193,7 @@ export default class Chat extends Component {
 				]}
 			>
 				<GiftedChat
+				
 					messages={this.state.messages}
 					onSend={messages => this.onSend(messages)}
 					user={{
