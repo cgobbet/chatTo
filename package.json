@@ -10,6 +10,8 @@
   "dependencies": {
     "@react-native-community/masked-view": "^0.1.10",
     "apsl-react-native-button": "^3.1.1",
+    "babel-preset-es2015": "^6.24.1",
+    "base-64": "^0.1.0",
     "expo": "^37.0.7",
     "firebase": "^7.14.1",
     "link": "^0.1.5",
