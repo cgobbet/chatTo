@@ -18,3 +18,6 @@ components/Start copy.js
 Icon
 chatTo.code-workspace
 components/chat_copy.js
+components/ongoing.js
+components/Chat-backup.js
+components/Chat_new.js
