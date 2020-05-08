@@ -1,23 +1,19 @@
 import 'firebase/firestore';
 
-import { AsyncStorage, Platform, StyleSheet, View, YellowBox } from 'react-native';
+import { AsyncStorage, Platform, StyleSheet, Text, View, YellowBox } from 'react-native';
 import { Bubble, GiftedChat, InputToolbar } from 'react-native-gifted-chat';
+import React, { Component } from 'react';
 import { decode, encode } from 'base-64';
 
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import NetInfo from '@react-native-community/netinfo';
-import React from 'react';
 import _ from 'lodash';
 import firebase from 'firebase';
 
 YellowBox.ignoreWarnings(['Setting a timer']);
-const _console = _.clone(console);
-console.warn = message => {
-	if (message.indexOf('Setting a timer') <= -1) {
-		_console.warn(message);
-	}
-};
 
+console.disableYellowBox = true;
+window.addEventListener = x => x;
 // Flatlist
 if (!global.btoa) {
 	global.btoa = encode;
@@ -28,19 +24,16 @@ if (!global.atob) {
 }
 
 export default class Chat extends React.Component {
+// adds name to the top of chat window
+  static navigationOptions = ({ navigation }) => {
+    return {
+    title: navigation.state.params.name,
+    };
+  };
   constructor() {
     super();
 
-    this.state = {
-			messages: [],
-			uid: 0, //! does not exist
-			user: {
-				_id: '',
-				name: '',
-				avatar: '', 
-      },
-      isConnected: false,
-    };
+
 
     if (!firebase.apps.length) {
       firebase.initializeApp({
@@ -54,36 +47,71 @@ export default class Chat extends React.Component {
 				measurementId: 'G-H8GTWS0C3G',
 			});
     }
-    this.referenceMessages = firebase.firestore().collection('messages');    
+    this.referenceMessages = firebase.firestore().collection('messages');   
+    
+    this.state = {
+			messages: [],
+			user: {
+				_id: '',
+				name: '',
+				avatar: '',
+			},
+			uid: 0,
+			// isConnected: false, - this line was creating an error, forcing to use this.state.isConnected on line 101
+		};
   }
 
-  static navigationOptions = ({ navigation }) => {
-    return {
-      title: navigation.state.params.name,
-    };
+	getMessages = async () => {
+		let messages = '';    
+    try {
+      messages = (await AsyncStorage.getItem('messages')) || [];
+      this.setState({
+        messages: JSON.parse(messages),
+      });
+    } catch (error) {
+      console.log(`I am unable to retrieve the messages: ${error.message}`);
+    }
   };
 
+  saveMessages = async () => {
+    try {
+      await AsyncStorage.setItem('messages', JSON.stringify(this.state.messages));
+    } catch (error) {
+      console.log(`I could not save the message: ${error.message}`);
+    }
+  }
+
+	deleteMessages = async () => {
+    try {
+      await AsyncStorage.removeItem('messages');
+    } catch (error) {
+			console.log(`Regrettably I am not competent enough to delete this message: ${error.message}`);
+    }
+  }
   componentDidMount() {
     NetInfo.fetch().then(state => {
-			if (this.state.isConnected) {
+      //console.log('Connection type', state.type);
+			if (state.isConnected) {
+				//console.log('Is connected?', state.isConnected);        
         this.authUnsubscribe = firebase.auth().onAuthStateChanged(async user => {
             if (!user) {
               try {
                 await firebase.auth().signInAnonymously();
               } catch (error) {
-                console.log(`'Sign in has failed:' ${error.message}`);
+                console.log(`'Sign in has failed: ' ${error.message}`);
               }
             }
 
             this.setState({
-              isConnected: true,
-              user: {
-                _id: user._id, // ! _id: user.uid,
-                name: this.props.navigation.state.params.name,
-                avatar: 'https://placeimg.com/140/140/any',
-              },
-              messages: [],
-            });
+							isConnected: true,
+							user: {
+								_id: user._id, // ! _id: user.uid,
+								name: this.props.navigation.state.params.name,
+								// avatar: 'https://placeimg.com/140/140/any',
+							},
+							loggedInText: this.props.navigation.state.params.name + ' has entered the chat',
+							messages: [],
+						});
             this.unsubscribe = this.referenceMessages
 						.orderBy('createdAt', 'desc')
 						.onSnapshot(this.onCollectionUpdate);
@@ -97,73 +125,38 @@ export default class Chat extends React.Component {
     });
   }
 
-  componentWillUnmount() {
-    this.authUnsubscribe();
-    this.unsubscribe();
-  }
-
   onCollectionUpdate = querySnapshot => {
     const messages = [];
     querySnapshot.forEach(doc => {
       var data = doc.data();
       messages.push({
-        _id: data._id,
-        text: data.text || '',
-        createdAt: data.createdAt.toDate(),
-        user: data.user,
-        // user: {
-        //   _id: data._id,
-        //   name: user.name,
-        //   avatar: data.avatar,
-        // }
-      });
+				_id: data._id,
+				text: data.text.toString(),
+				createdAt: data.createdAt.toDate(),
+				// user: data.user,
+				user: {
+					_id: data.user._id,
+					name: data.user.name,
+					avatar: data.user.avatar,
+				},
+			});
     });
     this.setState({
       messages,
     });
   };
 
-  addMessage() {
-    const message = this.state.messages[0];
-    this.referenceMessages.add({
-      _id: message._id,
-      text: message.text || '',
-      createdAt: message.createdAt,
-      // user: this.state.user,
-      user: this.state.messages[0].user,
-			uid: this.state.uid, // !
-    });
-  }
+	addMessage = () => {
+		this.referenceMessages.add({
+			_id: this.state.messages[0]._id,
+			text: this.state.messages[0].text,
+			createdAt: this.state.messages[0].createdAt,
+			user: this.state.messages[0].user,
+			uid: this.state.uid,
+		});
+	};
 
-  async getMessages() {
-    let messages = [];
-    try {
-      messages = (await AsyncStorage.getItem('messages')) || [];
-      this.setState({
-        messages: JSON.parse(messages),
-      });
-    } catch (error) {
-      console.log(`I am unable to retrieve the messages: ${error.message}`);
-    }
-  }
-
-  async saveMessages() {
-    try {
-      await AsyncStorage.setItem('messages', JSON.stringify(this.state.messages));
-    } catch (error) {
-      console.log(`I could not save the message: ${error.message}`);
-    }
-  }
-
-  async deleteMessages() {
-    try {
-      await AsyncStorage.removeItem('messages');
-    } catch (error) {
-			console.log(`Regrettably I am not competent enough to delete this message: ${error.message}`);
-    }
-  }
-
-  onSend = (messages = []) => {
+	onSend(messages = []) {
     this.setState(
       previousState => ({
         messages: GiftedChat.append(previousState.messages, messages),
@@ -173,17 +166,6 @@ export default class Chat extends React.Component {
         this.saveMessages();
       },
     );
-  };
-
-  renderInputToolbar(props){
-    if (this.state.isConnected == false){
-    } else {
-      return (
-        <InputToolbar
-          {...props}
-        />
-      )
-    }
   }
 
   renderBubble(props) {
@@ -202,17 +184,39 @@ export default class Chat extends React.Component {
     );
   }
 
+  // Hide toolbar when user is offline
+	renderInputToolbar = props => {
+		if (this.state.isConnected === false) {
+		} else {
+			return <InputToolbar {...props} />;
+		}
+	};
+
+  componentWillUnmount() {
+    this.authUnsubscribe(); // error saying it is undefined
+    this.unsubscribe();
+  }
+
   render() {
     return (
 			<View
-				style={[styles.container, { backgroundColor: this.props.navigation.state.params.color }]}
+				style={[
+					styles.container,
+					{
+						backgroundColor: this.props.navigation.state.params.color,
+					},
+				]}
 			>
 				<GiftedChat
-					user={this.state.user}
+					renderInputToolbar={this.renderInputToolbar}
+					renderBubble={this.renderBubble}
 					messages={this.state.messages}
 					onSend={messages => this.onSend(messages)}
-					renderBubble={this.renderBubble.bind(this)}
-					renderInputToolbar={this.renderInputToolbar.bind(this)}
+					user={{
+						_id: 1,
+						name: 'Cassiano',
+						avatar: 'https://placeimg.com/140/140/any',
+					}}
 				/>
 				{Platform.OS === 'android' ? <KeyboardSpacer /> : null}
 			</View>
@@ -223,13 +227,12 @@ export default class Chat extends React.Component {
 const styles = StyleSheet.create({
 	container: {
 		flex: 1,
-		// color: '#FFFFFF',
-		backgroundColor: '#000000',
 	},
-	// mapContainer: {
-	// 	margin: 1,
-	// 	width: 250,
-	// 	height: 200,
-	// 	borderRadius: 13,
-	// },
+	userName: {
+		fontSize: 10,
+		color: '#fff',
+		alignSelf: 'center',
+		opacity: 0.5,
+		marginTop: 25,
+	},
 });
