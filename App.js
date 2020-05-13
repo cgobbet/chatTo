@@ -3,6 +3,7 @@ import 'react-native-screens';
 import { StyleSheet, Text, View } from "react-native";
 
 import Chat from "./components/Chat";
+import CustomActions from './CustomActions';
 import React from "react";
 // import the screens
 // import Screen1 from "./components/Screen1";
