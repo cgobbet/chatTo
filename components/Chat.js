@@ -43,8 +43,8 @@ export default class Chat extends React.Component {
 				name: '',
 				avatar: '',
 			},
-			uid: 0,
-			isConnected: false, // this line was creating an error, forcing to use this.state.isConnected on line 101
+			// uid: null,
+			isConnected: false,// this line was creating an error, forcing to use this.state.isConnected on line 101
 			image: null,
 			location: null,
 		};
@@ -68,7 +68,7 @@ export default class Chat extends React.Component {
 		try {
 			messages = (await AsyncStorage.getItem('messages')) || [];
 			this.setState({
-				messages: JSON.parse(messages),
+				messages: JSON.parse(messages)
 			});
 		} catch (error) {
 			console.log(error.message);
@@ -101,7 +101,7 @@ export default class Chat extends React.Component {
 						try {
 							await firebase.auth().signInAnonymously();
 						} catch (error) {
-							console.log(`'Sign in has failed: ' ${error.message}`);
+							console.log(error.message);
 						}
 					}
 
@@ -112,7 +112,7 @@ export default class Chat extends React.Component {
 							name: this.props.navigation.state.params.name,
 							avatar: 'https://placeimg.com/140/140/any',
 						},
-						loggedInText: this.props.navigation.state.params.name + ' has entered the chat',
+						// loggedInText: this.props.navigation.state.params.name + ' has entered the chat',
 						messages: [],
 					});
 					this.unsubscribe = this.referenceMessages
@@ -157,16 +157,17 @@ export default class Chat extends React.Component {
 	addMessage() {
 		const message = this.state.messages[0];
 		this.referenceMessages.add({
-			_id: this.state.messages[0]._id,
-			text: this.state.messages[0].text,
-			createdAt: this.state.messages[0].createdAt,
+			_id: message._id,
+			text: message.text || '',
+			createdAt: message.createdAt,
 			user: this.state.messages[0].user,
-			uid: this.state.uid,
-			location: this.state.location || null,
+			// uid: this.state.uid,
+			location: message.location || null,
+			sent: true,
 		});
 	}
 
-	onSend(messages = []) {
+	onSend = (messages = []) => {
 		this.setState(
 			previousState => ({
 				messages: GiftedChat.append(previousState.messages, messages),
@@ -247,6 +248,7 @@ export default class Chat extends React.Component {
 					onSend={messages => this.onSend(messages)}
 					renderInputToolbar={this.renderInputToolbar}
 					renderBubble={this.renderBubble}
+					image={this.state.image}
 				/>
 				{Platform.OS === 'android' ? <KeyboardSpacer /> : null}
 			</View>
