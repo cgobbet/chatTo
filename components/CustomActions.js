@@ -6,14 +6,14 @@ import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 
 import PropTypes from 'prop-types';
 import React from 'react';
+import firebase from 'firebase';
 
-const firebase = require('firebase');
+// const firebase = require('firebase');
 
 export default class CustomActions extends React.Component {
 	constructor() {
-		super()
+		super();
 	}
-
 // selects images after permission granted	
 	async pickImage() {
 		try {
@@ -23,6 +23,7 @@ export default class CustomActions extends React.Component {
 				let result = await ImagePicker.launchImageLibraryAsync({
 					mediaTypes: ImagePicker.MediaTypeOptions.Images,
 					allowsEditing: true,
+					aspect: [4, 3],
 					quality: 1,
 				}).catch(error => console.log(error));
 
@@ -30,7 +31,6 @@ export default class CustomActions extends React.Component {
 					const imageUrl = await this.uploadImage(result.uri);
 					this.props.onSend({ image: imageUrl });
 				}
-				console.log(result);
 			}
 		} catch (error) {
 			console.log(error.message);
@@ -44,7 +44,7 @@ export default class CustomActions extends React.Component {
 
 			if (status === 'granted') {
 				let result = await ImagePicker.launchCameraAsync({
-					mediaTypes: ImagePicker.MediaTypeOptions.Images,
+					mediaTypes: ImagePicker.MediaTypeOptions.Images
 				}).catch(error => console.log(error));
 
 				if (!result.cancelled) {
@@ -57,27 +57,56 @@ export default class CustomActions extends React.Component {
 		}
 	}
 
+		// Upload image as Blob(binary large object) to Firebase storage
+	async uploadImage(uri) {
+		try {
+			const blob = await new Promise((resolve, reject) => {
+				const xhr = new XMLHttpRequest();
+				xhr.onload = () => {
+					resolve(xhr.response);
+				};
+				xhr.onerror = error => {
+					console.error(error);
+					reject(new TypeError('Network Request Failed!'));
+				};
+				xhr.responseType = 'blob';
+				xhr.open('GET', uri, true);
+				xhr.send(null);
+			});
+			const getImageName = uri.split('/');
+			const imageArrayLength = getImageName[getImageName.length - 1];
+			const ref = firebase.storage().ref().child(`images/${imageArrayLength}`);
+			// console.log(ref, getImageName[imageArrayLength]);
+			const snapshot = await ref.put(blob);
+			blob.close();
+			const imageURL = await snapshot.ref.getDownloadURL();
+			return imageURL;
+		} catch (error) {
+			console.log(error.message);
+		}
+	}
 	async getLocation() {
 		try {
 			const { status } = await Permissions.askAsync(Permissions.LOCATION);
 			if (status === 'granted') {
-				const location = await Location.getCurrentPositionAsync({}).catch(error =>
-					console.log(error),
-				);
+				// const location = await Location.getCurrentPositionAsync({}).catch(error =>
+				// 	console.log(error),
+				// );
+				const location = await Location.getCurrentPositionAsync({});
 
 				if (location) {
 					this.props.onSend({
 						location: {
 							longitude: location.coords.longitude,
 							latitude: location.coords.latitude,
-						}
+						},
 					});
 				}
 			}
 		} catch (error) {
 				console.log(error.message);
 		}
-  };
+  }
 
 	onActionPress = () => {
 		const options = ['Select Image from Library', 'Take a Photo', 'Share Location', 'Cancel'];
@@ -108,8 +137,9 @@ export default class CustomActions extends React.Component {
 		return (
 			<TouchableOpacity
 				accessible={true}
-				accessibilityLabel='Click to see options!'
-				accessibilityHint='Action options allow you to pick from you library image, take a picture or share your location'
+				accessibilityLabel='Tap for action options!'
+				accessibilityHint='The action options allow you to select an image from the library, 
+                                   take a photo using the device camera or share your device location.'
 				style={[styles.container]}
 				onPress={this.onActionPress}
 			>
