@@ -108,7 +108,7 @@ export default class Chat extends React.Component {
 					this.setState({
 						isConnected: true,
 						user: {
-							_id: user._id, // ! _id: user.uid,
+							_id: user.uid, // ! _id: user.uid,
 							name: this.props.navigation.state.params.name,
 							avatar: 'https://placeimg.com/140/140/any',
 						},
@@ -145,7 +145,7 @@ export default class Chat extends React.Component {
 					name: data.user.name,
 					avatar: data.user.avatar,
 				},
-				image: data.image,
+				image: data.image || '',
 				location: data.location,
 			});
 		});
@@ -160,7 +160,9 @@ export default class Chat extends React.Component {
 			_id: message._id,
 			text: message.text || '',
 			createdAt: message.createdAt,
-			user: this.state.messages[0].user,
+			user: message.user,
+			image: message.image || '',
+			// user: this.state.messages[0].user,
 			// uid: this.state.uid,
 			location: message.location || null,
 			sent: true,
@@ -196,7 +198,7 @@ export default class Chat extends React.Component {
 						backgroundColor: '#781820',
 					},
 					left: {
-						backgroundColor: '#FF8C00',
+						backgroundColor: '#87CEFA',
 					},
 				}}
 			/>
@@ -237,12 +239,11 @@ export default class Chat extends React.Component {
 				style={[styles.container, { backgroundColor: this.props.navigation.state.params.color }]}
 			>
 				<GiftedChat
+					scrollToBottom
 					messages={this.state.messages}
-					user={{
-						_id: 1,
-						name: 'Cassiano',
-						avatar: 'https://placeimg.com/140/140/any',
-					}}
+					user={this.state.user}
+					showUserAvatar={true}
+					renderUsernameOnMessage={true}
 					renderCustomView={this.renderCustomView}
 					renderActions={this.renderCustomActions}
 					onSend={messages => this.onSend(messages)}
