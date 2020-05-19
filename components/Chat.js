@@ -10,7 +10,6 @@ import CustomActions from './CustomActions';
 import KeyboardSpacer from 'react-native-keyboard-spacer';
 import NetInfo from '@react-native-community/netinfo';
 import React from 'react';
-// import _ from 'lodash';
 import firebase from 'firebase';
 
 YellowBox.ignoreWarnings(['Setting a timer']);
@@ -108,7 +107,7 @@ export default class Chat extends React.Component {
 					this.setState({
 						isConnected: true,
 						user: {
-							_id: user.uid, // ! _id: user.uid,
+							_id: user.uid,
 							name: this.props.navigation.state.params.name,
 							avatar: 'https://placeimg.com/140/140/any',
 						},
@@ -139,7 +138,6 @@ export default class Chat extends React.Component {
 				_id: data._id,
 				text: data.text.toString(),
 				createdAt: data.createdAt.toDate(),
-				// user: data.user,
 				user: {
 					_id: data.user._id,
 					name: data.user.name,
@@ -162,8 +160,6 @@ export default class Chat extends React.Component {
 			createdAt: message.createdAt,
 			user: message.user,
 			image: message.image || '',
-			// user: this.state.messages[0].user,
-			// uid: this.state.uid,
 			location: message.location || null,
 			sent: true,
 		});
@@ -229,7 +225,7 @@ export default class Chat extends React.Component {
 		return <CustomActions {...props} />;
 	};
 	componentWillUnmount() {
-		this.authUnsubscribe(); // error saying it is undefined
+		this.authUnsubscribe();
 		this.unsubscribe();
 	}
 
