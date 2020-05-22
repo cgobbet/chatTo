@@ -47,16 +47,11 @@ export default class Chat extends React.Component {
 			image: null,
 			location: null,
 		};
+		// Initialize Firebase
 		if (!firebase.apps.length) {
 			firebase.initializeApp({
-				apiKey: 'AIzaSyBwNLF-v3vLoJTgCTz3xeoEmuO4-ANBeA0',
-				authDomain: 'chatto-980f7.firebaseapp.com',
-				databaseURL: 'https://chatto-980f7.firebaseio.com',
-				projectId: 'chatto-980f7',
-				storageBucket: 'chatto-980f7.appspot.com',
-				messagingSenderId: '957475612917',
-				appId: '1:957475612917:web:0de0f4a37c9f8cdd7c3dbc',
-				measurementId: 'G-H8GTWS0C3G',
+				// insert Firebase data
+
 			});
 		}
 		this.referenceMessages = firebase.firestore().collection('messages');
