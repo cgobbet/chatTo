@@ -1,16 +1,21 @@
 import 'react-native-screens';
 
-import { StyleSheet, Text, View } from "react-native";
-
+// chat screens
 import Chat from "./components/Chat";
-import React from "react";
 import Start from "./components/Start";
+//navigation
 import { createAppContainer } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 
 const navigator = createStackNavigator({
-  Start: { screen: Start },
-  Chat: { screen: Chat },
+	Start: {
+		screen: Start,
+		navigationOptions: {
+			//hide navigation bar
+			headerShown: false,
+		},
+	},
+	Chat: { screen: Chat },
 });
 
 const navigatorContainer = createAppContainer(navigator);
