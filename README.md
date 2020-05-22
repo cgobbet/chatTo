@@ -1,7 +1,7 @@
 # chatTo
 Chat app for CareerFoundry
 
-<b>ChatTo</b> is a mobile chat app made with React Native and Gifted Chat. It has been made using Expo, a CLI tool that runs with Node.js and allows the development of the app while running it on a server.
+ChatTo is a mobile chat app made with React Native and Gifted Chat. It has been made using Expo, a CLI tool that runs with Node.js and allows the development of the app while running it on a server.
  
 ChattTo has been tested in both Android and iOS simulators, with minimal differences in the outcome.
 
