@@ -76,7 +76,6 @@ export default class CustomActions extends React.Component {
 			const getImageName = uri.split('/');
 			const imageArrayLength = getImageName[getImageName.length - 1];
 			const ref = firebase.storage().ref().child(`images/${imageArrayLength}`);
-			// console.log(ref, getImageName[imageArrayLength]);
 			const snapshot = await ref.put(blob);
 			blob.close();
 			const imageURL = await snapshot.ref.getDownloadURL();
@@ -89,9 +88,6 @@ export default class CustomActions extends React.Component {
 		try {
 			const { status } = await Permissions.askAsync(Permissions.LOCATION);
 			if (status === 'granted') {
-				// const location = await Location.getCurrentPositionAsync({}).catch(error =>
-				// 	console.log(error),
-				// );
 				const location = await Location.getCurrentPositionAsync({});
 
 				if (location) {
