@@ -134,7 +134,7 @@ export default class Chat extends React.Component {
 		// loop through documents
 		querySnapshot.forEach(doc => {
 			// get data snapshot
-			var data = doc.data();
+			let data = doc.data();
 			messages.push({
 				_id: data._id, // message unique ID
 				text: data.text.toString(), // msg content
