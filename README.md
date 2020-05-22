@@ -30,7 +30,7 @@ No, it' s not. You have to create a Firebase project on Google and get the SDK c
 
 <b><h2>Images</h2></b>
 
-<a href="https://ibb.co/3zdndLB"><img src="https://i.ibb.co/9tg7gCs/screens.png" alt="screens" border="0"></a>
+<a href="https://ibb.co/cXqSTdp"><img src="https://i.ibb.co/yB2csJM/screens.png" alt="screens" border="1px"></a>
 
 
 
