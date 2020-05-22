@@ -9,14 +9,14 @@
 	-	Sending images and location other than the messages
 	-	Chat rooms with customized colour
   
-<b>I'm feelinmg adventurous and I want to install it. What should I do?</b><br/>
+<b>I'm feeling adventurous and I want to install it. What should I do?</b><br/>
 	-	Start by installing expo-cli. After that, from the root directory, run `npm install` from the command line. To put the server running, use the command `expo start`.
 	-	Once Expo is installed, navigate to the root directory and run npm i.
 	-	Next, you can start the app by running expo start. This will launch DevTools on port 19XXX (some number).
 	-	You can either scan the barcode using a mobile device (expo app required: Android or iOS) or use a simulator or emulator.
 
 <b>Is that all?</b><br/>
-No, it' s not. You have to create a Firebase project on Google and get the SDK config data for you to run it once the information used in the repo is no longer valid. It is simple, once you are done. Not confident? Check this tutorial or follow the instructions below.
+No, it' s not. You have to create a Firebase project on Google and get the SDK config data for you to run it once the information used in the repo is no longer valid. It is simple, once you are done. Not confident? Check <a href="https://www.youtube.com/watch?v=lpFDFK44pX8" target="_blank">this tutorial</a> or follow the instructions below.
 
 <b>Setting up the database</b><br/>
 	1.	Head to Firebase click on Sign in in the upper-right corner.<br/>
