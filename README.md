@@ -30,8 +30,10 @@ No, it' s not. You have to create a Firebase project on Google and get the SDK c
 
 <b><h2>Images</h2></b>
 
-<b>Start Screen</b><br/><br/>
-<a href="https://ibb.co/3TV2PvM"><img src="https://i.ibb.co/b6YTGF2/Start-Screen.png" alt="Start-Screen" border="1" width="40%"></a>
-<b>Chat Screen</b><br/><br/>
-<a href="https://ibb.co/wwJCk6L"><img src="https://i.ibb.co/SdQ0jvx/Chat-Screen.png" alt="Chat-Screen" border="1" width="40%"></a>
+<div><b>Start Screen</b><br/><br/>
+<a href="https://ibb.co/3TV2PvM"><img src="https://i.ibb.co/b6YTGF2/Start-Screen.png" alt="Start-Screen" border="1" width="40%"></a></div><div><b>Chat Screen</b><br/><br/>
+<a href="https://ibb.co/wwJCk6L"><img src="https://i.ibb.co/SdQ0jvx/Chat-Screen.png" alt="Chat-Screen" border="1" width="40%"></a></div>
+
+
+
 
