@@ -28,5 +28,6 @@ No, it' s not. You have to create a Firebase project on Google and get the SDK c
 	7.	It is essential that you make sure you are <b>creating a Firestore Database</b> and not a Realtime Database.<br/>
 	8.	Before you can start adding data into it, you first need to set up some security rules for your database.<br/>
 
-Images
+<b>Images</b>
+
 
