@@ -30,6 +30,7 @@ export default class Chat extends React.Component {
 	static navigationOptions = ({ navigation }) => {
 		return {
 			title: navigation.state.params.name,
+			style: navigation.state.params.background,
 		};
 	};
 	constructor() {
@@ -42,7 +43,6 @@ export default class Chat extends React.Component {
 				name: '',
 				avatar: '',
 			},
-			// uid: null,
 			isConnected: false,// this line was creating an error, forcing to use this.state.isConnected on line 101
 			image: null,
 			location: null,
@@ -50,13 +50,19 @@ export default class Chat extends React.Component {
 		// Initialize Firebase
 		if (!firebase.apps.length) {
 			firebase.initializeApp({
-				// insert Firebase data
-
+				apiKey: 'AIzaSyBwNLF-v3vLoJTgCTz3xeoEmuO4-ANBeA0',
+				authDomain: 'chatto-980f7.firebaseapp.com',
+				databaseURL: 'https://chatto-980f7.firebaseio.com',
+				projectId: 'chatto-980f7',
+				storageBucket: 'chatto-980f7.appspot.com',
+				messagingSenderId: '957475612917',
+				appId: '1:957475612917:web:0de0f4a37c9f8cdd7c3dbc',
+				measurementId: 'G-H8GTWS0C3G',
 			});
 		}
 		this.referenceMessages = firebase.firestore().collection('messages');
 	}
-
+  //async get messages from local storage
 	async getMessages() {
 		let messages = [];
 		try {
@@ -87,9 +93,9 @@ export default class Chat extends React.Component {
 	}
 	componentDidMount() {
 		NetInfo.fetch().then(state => {
-			//console.log('Connection type', state.type);
+			//checks Internet connection
 			if (state.isConnected) {
-				//console.log('Is connected?', state.isConnected);
+
 				this.authUnsubscribe = firebase.auth().onAuthStateChanged(async user => {
 					if (!user) {
 						try {
@@ -98,7 +104,7 @@ export default class Chat extends React.Component {
 							console.log(error.message);
 						}
 					}
-
+				// gets the most recent data for state
 					this.setState({
 						isConnected: true,
 						user: {
@@ -106,7 +112,6 @@ export default class Chat extends React.Component {
 							name: this.props.navigation.state.params.name,
 							avatar: 'https://placeimg.com/140/140/any',
 						},
-						// loggedInText: this.props.navigation.state.params.name + ' has entered the chat',
 						messages: [],
 					});
 					this.unsubscribe = this.referenceMessages
@@ -114,6 +119,7 @@ export default class Chat extends React.Component {
 						.onSnapshot(this.onCollectionUpdate);
 				});
 			} else {
+			// if user is offline
 				this.setState({
 					isConnected: false,
 				});
@@ -130,16 +136,16 @@ export default class Chat extends React.Component {
 			// get data snapshot
 			var data = doc.data();
 			messages.push({
-				_id: data._id,
-				text: data.text.toString(),
+				_id: data._id, // message unique ID
+				text: data.text.toString(), // msg content
 				createdAt: data.createdAt.toDate(),
-				user: {
+				user: { // user data
 					_id: data.user._id,
 					name: data.user.name,
 					avatar: data.user.avatar,
 				},
 				image: data.image || '',
-				location: data.location,
+				location: data.location, // location data
 			});
 		});
 		this.setState({
@@ -147,6 +153,7 @@ export default class Chat extends React.Component {
 		});
 	};
 
+	// produces message body and metadata 
 	addMessage() {
 		const message = this.state.messages[0];
 		this.referenceMessages.add({
@@ -160,6 +167,7 @@ export default class Chat extends React.Component {
 		});
 	}
 
+	// save locally the sent message 
 	onSend = (messages = []) => {
 		this.setState(
 			previousState => ({
@@ -172,14 +180,14 @@ export default class Chat extends React.Component {
 		);
 	}
 
-	// Hide toolbar when user is offline
+	// Hide toolbar if user is offline
 	renderInputToolbar = props => {
 		if (this.state.isConnected === false) {
 		} else {
 			return <InputToolbar {...props} />;
 		}
 	};
-
+// manages message bubble colour
 	renderBubble(props) {
 		return (
 			<Bubble
@@ -196,6 +204,7 @@ export default class Chat extends React.Component {
 		);
 	}
 
+	// customize message view options
 	renderCustomView(props) {
 		const { currentMessage } = props;
 		if (currentMessage.location) {
@@ -215,10 +224,12 @@ export default class Chat extends React.Component {
 		}
 		return null;
 	}
-
+  // add custom actions from CustomAcions.js file
 	renderCustomActions = props => {
 		return <CustomActions {...props} />;
 	};
+
+	// Stop listening for changes
 	componentWillUnmount() {
 		this.authUnsubscribe();
 		this.unsubscribe();
@@ -227,7 +238,7 @@ export default class Chat extends React.Component {
 	render() {
 		return (
 			<View
-				style={[styles.container, { backgroundColor: this.props.navigation.state.params.color }]}
+				style={[styles.container, { backgroundColor: this.props.navigation.state.params.selectedColor }]}
 			>
 				<GiftedChat
 					scrollToBottom
