@@ -1,3 +1,4 @@
+![Chat App](https://90minutos.org/img/Photo%20by%20ROBIN%20WORRALL%20on%20Unsplash.jpg)
 <h1>Chat app for CareerFoundry</h1>
 
 <b>ChatTo</b> is a mobile chat app made with <b>React Native</b> and <b>Gifted Chat</b>. It has been made using Expo, a CLI tool that runs with Node.js and allows the development of the app while running it on a server.<br/>
@@ -31,6 +32,8 @@ No, it' s not. You have to create a Firebase project on Google and get the SDK c
 <b><h2>Images</h2></b>
 
 <a href="https://ibb.co/cXqSTdp"><img src="https://i.ibb.co/yB2csJM/screens.png" alt="screens" border="1px"></a>
+
+Main image: Photo by [ROBIN WORRALL](https://unsplash.com/photos/FPt10LXK0cg) on Unsplash
 
 
 
