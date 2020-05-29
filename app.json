@@ -1,7 +1,7 @@
 {
   "expo": {
-    "name": "HelloWorld",
-    "slug": "hello-world-three",
+    "name": "ChatTo",
+    "slug": "chat-to",
     "platforms": [
       "ios",
       "android",
@@ -23,6 +23,8 @@
     ],
     "ios": {
       "supportsTablet": true
-    }
+    },
+    "description": "A chat app made with Expo and GiftedChat.",
+    "githubUrl": "https://github.com/cgobbet/chatTo"
   }
 }
